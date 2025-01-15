@@ -13,7 +13,7 @@ const PomodoroTimer = () => {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const router = useRouter();
 
-  // Toggle timer
+  
   const toggleTimer = (): void => {
     setIsRunning((prevState) => {
       if (prevState) {
@@ -23,14 +23,14 @@ const PomodoroTimer = () => {
     });
   };
 
-  // Reset timer
+
   const resetTimer = (): void => {
     setIsRunning(false);
     setElapsedTime(0);
     setTimeLeft(mode === "Pomodoro" ? 25 * 60 : mode === "Short Break" ? 10 * 60 : 15 * 60);
   };
 
-  // Handle pause and send timer data
+ 
   const handlePause = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -40,10 +40,11 @@ const PomodoroTimer = () => {
   
     const data = {
       project_name: mode,
-      elapsed_time: Math.floor(elapsedTime), // Ensure elapsed_time is an integer
+      elapsed_time: Math.floor(elapsedTime), 
     };
   
-    console.log("Sending data to backend:", data); // Log data to verify format
+    console.log("Sending data to backend:", data); 
+    console.log("JWT token being sent:", localStorage.getItem("token"));
   
     try {
       const response = await axios.post("http://127.0.0.1:5000/api/save-timer", data, {
@@ -59,7 +60,7 @@ const PomodoroTimer = () => {
   };
   
 
-  // Timer logic
+  
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isRunning) {
@@ -81,7 +82,7 @@ const PomodoroTimer = () => {
     };
   }, [isRunning]);
 
-  // Update mode
+ 
   useEffect(() => {
     setElapsedTime(0);
     setTimeLeft(mode === "Pomodoro" ? 25 * 60 : mode === "Short Break" ? 10 * 60 : 15 * 60);

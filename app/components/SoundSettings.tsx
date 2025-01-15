@@ -6,7 +6,7 @@ const SoundsSettings: React.FC = () => {
     <div>
       <h2 className="text-2xl font-bold mb-4">Sounds Settings</h2>
       <form>
-        {/* Add sound-related settings */}
+     
       </form>
     </div>
   );

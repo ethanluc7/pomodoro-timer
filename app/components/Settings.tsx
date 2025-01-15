@@ -5,10 +5,10 @@ import SoundsSettings from "./SoundSettings";
 import AccountSettings from './AccountSettings';
 
 export default function Settings({ children, onClose }: { children: ReactNode; onClose: () => void }) {
-  // State to keep track of the current active section
+ 
   const [activeSection, setActiveSection] = useState<string>('general');
 
-  // Handle changing sections
+  
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
   };
@@ -24,7 +24,7 @@ export default function Settings({ children, onClose }: { children: ReactNode; o
         </button>
 
         <div className="flex h-full">
-          {/* Sidebar */}
+          
           <div className="w-64 bg-gray-800 text-white p-4">
             <div className="flex flex-col space-y-4">
               <button
@@ -54,9 +54,9 @@ export default function Settings({ children, onClose }: { children: ReactNode; o
             </div>
           </div>
 
-          {/* Main Content */}
+     
           <div className="flex-grow p-8 overflow-y-auto">
-            {/* Conditional rendering based on active section */}
+      
             {activeSection === 'general' && <GeneralSettings />}
             {activeSection === 'timers' && <TimersSettings />}
             {activeSection === 'sounds' && <SoundsSettings />}

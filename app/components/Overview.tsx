@@ -13,7 +13,7 @@ export default function Overview({ children, onClose }: { children: ReactNode; o
 
         <div className="p-4">
           <h2 className="text-2xl font-bold mb-4">Overview</h2>
-          {/* Add content specific to the Overview modal here */}
+        
           {children}
         </div>
       </div>

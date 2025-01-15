@@ -12,17 +12,15 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = async () => {
-    setMessage(""); // Clear previous message
-    setError(""); // Clear any previous error
+    setMessage("");
+    setError("");
 
-    // Validate if username and password are provided
     if (!email || !password) {
       setError("Please enter both email and password.");
       return;
     }
 
     try {
-      // Make the API request to login
       const response = await axios.post("http://127.0.0.1:5000/api/login", {
         email,
         password,
@@ -30,13 +28,11 @@ export default function LoginPage() {
 
       const { access_token } = response.data;
 
-      // Store the JWT token in local storage
       localStorage.setItem("token", access_token);
 
-      // Redirect to the home or dashboard page after successful login
       setMessage("Login successful!");
       setTimeout(() => {
-        router.push("/"); // Change this to your desired page after login
+        router.push("/");
       }, 2000);
     } catch (error: any) {
       setError(error.response?.data?.message || "Login failed");
@@ -44,7 +40,7 @@ export default function LoginPage() {
   };
 
   const handleRegisterRedirect = () => {
-    router.push("/register"); // Navigate to the register page
+    router.push("/register");
   };
 
   return (

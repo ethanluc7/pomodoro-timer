@@ -11,7 +11,7 @@ export default function OverviewProvider({ children }: { children: React.ReactNo
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
 
   useEffect(() => {
-    // Show modal when on `/overview`
+    
     if (pathname === "/overview") {
       setIsOverviewOpen(true);
     } else {
@@ -24,7 +24,7 @@ export default function OverviewProvider({ children }: { children: React.ReactNo
       {children}
       {isOverviewOpen && (
         <Overview onClose={() => setIsOverviewOpen(false)}>
-          <div>good morning</div>
+          <div></div>
         </Overview>
       )}
     </>

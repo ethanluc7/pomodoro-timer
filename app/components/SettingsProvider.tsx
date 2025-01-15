@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Settings from "./Settings";
+
 
 export default function SettingsProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -11,7 +11,7 @@ export default function SettingsProvider({ children }: { children: React.ReactNo
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
-    // Show modal when on `/settings`
+   
     if (pathname === "/settings") {
       setIsSettingsOpen(true);
     } else {

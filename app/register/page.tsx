@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // For redirecting to the login page
+import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function RegisterPage() {
@@ -15,10 +15,9 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const handleRegister = async () => {
-    setMessage(""); // Clear previous messages
-    setError(""); // Clear previous errors
+    setMessage("");
+    setError("");
 
-    // Basic validation
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       setError("Please fill out all fields.");
       return;
@@ -30,7 +29,6 @@ export default function RegisterPage() {
     }
 
     try {
-      // Send registration request to Flask backend directly
       const response = await axios.post("http://127.0.0.1:5000/api/register", {
         firstName,
         lastName,
@@ -38,19 +36,18 @@ export default function RegisterPage() {
         password,
       });
 
-      // Handle successful registration
       setMessage("Registration successful! Redirecting to login...");
-      setFirstName(""); // Clear the first name field
-      setLastName(""); // Clear the last name field
-      setEmail(""); // Clear the email field
-      setPassword(""); // Clear the password field
-      setConfirmPassword(""); // Clear the confirm password field
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
 
-      // Redirect to login page after a short delay
       setTimeout(() => router.push("/login"), 2000);
     } catch (error: any) {
-      // Handle error and display the message from backend
-      setError(error.response?.data?.error || "Registration failed. Please try again.");
+      setError(
+        error.response?.data?.error || "Registration failed. Please try again."
+      );
     }
   };
 
@@ -58,9 +55,11 @@ export default function RegisterPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-2xl font-bold mb-6">Create Account</h1>
 
-      {/* First Name */}
       <div className="w-full max-w-md mb-4">
-        <label htmlFor="firstName" className="block text-lg font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="firstName"
+          className="block text-lg font-medium text-gray-700 mb-2"
+        >
           First Name
         </label>
         <input
@@ -72,9 +71,11 @@ export default function RegisterPage() {
         />
       </div>
 
-      {/* Last Name */}
       <div className="w-full max-w-md mb-4">
-        <label htmlFor="lastName" className="block text-lg font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="lastName"
+          className="block text-lg font-medium text-gray-700 mb-2"
+        >
           Last Name
         </label>
         <input
@@ -86,9 +87,11 @@ export default function RegisterPage() {
         />
       </div>
 
-      {/* Email */}
       <div className="w-full max-w-md mb-4">
-        <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="email"
+          className="block text-lg font-medium text-gray-700 mb-2"
+        >
           Email
         </label>
         <input
@@ -100,9 +103,11 @@ export default function RegisterPage() {
         />
       </div>
 
-      {/* Password */}
       <div className="w-full max-w-md mb-4">
-        <label htmlFor="password" className="block text-lg font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="password"
+          className="block text-lg font-medium text-gray-700 mb-2"
+        >
           Password
         </label>
         <input
@@ -114,9 +119,11 @@ export default function RegisterPage() {
         />
       </div>
 
-      {/* Confirm Password */}
       <div className="w-full max-w-md mb-6">
-        <label htmlFor="confirmPassword" className="block text-lg font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="confirmPassword"
+          className="block text-lg font-medium text-gray-700 mb-2"
+        >
           Confirm Password
         </label>
         <input
