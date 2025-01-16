@@ -40,7 +40,6 @@ export default function Overview({
         if (response.data.logged_in) {
           setIsLoggedIn(true);
 
-          // Fetch timer data
           return axios.get("http://127.0.0.1:5000/api/get-timer-data", {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -103,7 +102,7 @@ export default function Overview({
 
     for (let i = 6; i >= 0; i--) {
       const date = new Date(today);
-      date.setDate(today.getDate() - i); // Project the last 6 days and today
+      date.setDate(today.getDate() - i); 
       labels.push(
         date.toLocaleDateString("en-US", {
           weekday: "short",

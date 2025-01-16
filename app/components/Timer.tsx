@@ -56,7 +56,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
     }
 
     const data = {
-      project_name: selectedTopic, // Submit the current topic to the backend
+      project_name: selectedTopic, 
       elapsed_time: Math.floor(elapsedTime),
     };
 
@@ -75,7 +75,6 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
       );
       console.log("Timer data saved successfully:", response.data);
     } catch (error: any) {
-      // console.error("Error saving timer data:", error.response?.data || error.message);
     }
   };
 

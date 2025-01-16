@@ -10,6 +10,23 @@ class Users(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.Text, nullable=False)
 
+    # Relationships
+    timer_settings = db.relationship("TimerSettings", backref="user", lazy=True)
+    timer_data = db.relationship("TimerData", backref="user", lazy=True)
+    topics = db.relationship("Topics", backref="user", lazy=True)
+
+class TimerSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pomodoro = db.Column(db.Integer, default=25)
+    short_break = db.Column(db.Integer, default=5)
+    long_break = db.Column(db.Integer, default=10)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
+class Topics(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
 class TimerData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     project_name = db.Column(db.String(100), nullable=False)

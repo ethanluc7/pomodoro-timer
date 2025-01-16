@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const TimersSettings: React.FC<{
   onUpdate: (values: {
@@ -10,21 +11,58 @@ const TimersSettings: React.FC<{
   const [pomodoro, setPomodoro] = useState<number>(25);
   const [shortBreak, setShortBreak] = useState<number>(5);
   const [longBreak, setLongBreak] = useState<number>(10);
-  const [useSequence, setUseSequence] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const handleSave = () => {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setErrorMessage("Please log in to see your timer settings.");
+      return;
+    }
+
+    axios
+      .get("http://127.0.0.1:5000/api/get-timer-settings", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const { pomodoro, short_break, long_break } = response.data;
+        setPomodoro(pomodoro);
+        setShortBreak(short_break);
+        setLongBreak(long_break);
+      })
+      .catch(() => {
+        setErrorMessage("Error fetching timer settings. Please try again.");
+      });
+  }, []);
+
+  const handleSave = async () => {
     onUpdate({ pomodoro, shortBreak, longBreak });
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("User is not logged in");
+
+      await axios.post(
+        "http://127.0.0.1:5000/api/save-timer-settings",
+        { pomodoro, shortBreak, longBreak },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+     
+    } catch {
+      setErrorMessage("Error saving timer settings. Please try again.");
+    }
   };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-black">Timers Settings</h2>
+      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
       <form>
         <div className="mb-4">
-          <label
-            htmlFor="pomodoro"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="pomodoro" className="block text-sm font-medium text-gray-700 mb-1">
             Pomodoro
           </label>
           <input
@@ -38,10 +76,7 @@ const TimersSettings: React.FC<{
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="shortBreak"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="shortBreak" className="block text-sm font-medium text-gray-700 mb-1">
             Short Break
           </label>
           <input
@@ -55,10 +90,7 @@ const TimersSettings: React.FC<{
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="longBreak"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="longBreak" className="block text-sm font-medium text-gray-700 mb-1">
             Long Break
           </label>
           <input
@@ -70,24 +102,6 @@ const TimersSettings: React.FC<{
           />
           <span className="text-sm text-gray-500">minutes</span>
         </div>
-
-        <div className="flex items-center mb-4">
-          <input
-            type="checkbox"
-            id="useSequence"
-            checked={useSequence}
-            onChange={() => setUseSequence((prev) => !prev)}
-            className="mr-2"
-          />
-          <label htmlFor="useSequence" className="text-sm text-gray-700">
-            Use the Pomodoro sequence: Pomodoro → short break, repeat 4x, then
-            one long break
-          </label>
-        </div>
-
-        <p className="text-sm text-gray-500 mb-4">
-          Number of Pomodoros complete is indicated with dots under "Pomodoro"
-        </p>
 
         <button
           type="button"

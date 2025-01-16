@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_cors import cross_origin
-from models import db, Users, TimerData
+from models import db, Users, TimerData, TimerSettings, Topics
 from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
@@ -116,3 +116,89 @@ def check_auth():
         return jsonify({'logged_in': True, 'user_id': user_id}), 200
     else:
         return jsonify({'logged_in': False}), 200
+
+
+@auth_bp.route('save-timer-settings', methods=['POST'])
+@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@jwt_required()
+def save_timer_settings():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    user = Users.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    timer_settings = TimerSettings.query.filter_by(user_id=user_id).first()
+    if not timer_settings:
+        timer_settings = TimerSettings(
+            pomodoro=data["pomodoro"],
+            short_break=data["shortBreak"],
+            long_break=data["longBreak"],
+            user_id=user_id,
+        )
+        db.session.add(timer_settings)
+    else:
+        timer_settings.pomodoro = data["pomodoro"]
+        timer_settings.short_break = data["shortBreak"]
+        timer_settings.long_break = data["longBreak"]
+
+    db.session.commit()
+    return jsonify({"message": "Timer settings saved successfully"})
+
+
+@auth_bp.route('/add-topic', methods=['POST'])
+@jwt_required()
+def add_topic():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    new_topic = Topics(name=data["name"], user_id=int(user_id))
+    db.session.add(new_topic)
+    db.session.commit()
+
+    return jsonify({"id": new_topic.id, "name": new_topic.name})
+
+
+@auth_bp.route('/get-topics', methods=['GET', 'OPTIONS'])
+@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@jwt_required()
+def get_topics():
+    try:
+        user_id = get_jwt_identity()
+
+        topics = Topics.query.filter_by(user_id=user_id).all()
+
+        result = [{"id": topic.id, "name": topic.name} for topic in topics]
+
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
+@auth_bp.route('/get-timer-settings', methods=['GET', 'OPTIONS'])
+@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@jwt_required()
+def get_timer_settings():
+    try:
+        user_id = get_jwt_identity()
+
+        timer_settings = TimerSettings.query.filter_by(user_id=user_id).first()
+
+        if not timer_settings:
+            return jsonify({
+                "pomodoro": 25,
+                "short_break": 5,
+                "long_break": 10,
+                "message": "Default timer settings returned as no settings were found."
+            }), 200
+
+ 
+        return jsonify({
+            "pomodoro": timer_settings.pomodoro,
+            "short_break": timer_settings.short_break,
+            "long_break": timer_settings.long_break
+        }), 200
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
