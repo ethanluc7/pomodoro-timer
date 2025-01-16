@@ -2,7 +2,6 @@
 
 import { createContext, useState, useEffect, ReactNode } from "react";
 
-
 export const AuthContext = createContext({
   token: "",
   setToken: (token: string) => {},

@@ -3,15 +3,17 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-
-export default function SettingsProvider({ children }: { children: React.ReactNode }) {
+export default function SettingsProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
-   
     if (pathname === "/settings") {
       setIsSettingsOpen(true);
     } else {
@@ -19,9 +21,5 @@ export default function SettingsProvider({ children }: { children: React.ReactNo
     }
   }, [pathname]);
 
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

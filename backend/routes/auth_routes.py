@@ -80,3 +80,39 @@ def save_timer():
 
     except Exception as e:
         return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
+@auth_bp.route('/get-timer-data', methods=['GET', 'OPTIONS'])
+@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@jwt_required()
+def get_timer_data():
+    try:
+        user_id = get_jwt_identity()
+
+       
+        timer_data = TimerData.query.filter_by(user_id=user_id).all()
+
+       
+        result = [
+            {
+                "project_name": data.project_name,
+                "elapsed_time": data.elapsed_time,
+                "timestamp": data.timestamp.isoformat()
+            }
+            for data in timer_data
+        ]
+
+        return jsonify({"timer_data": result}), 200
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
+@auth_bp.route('/check-auth', methods=['GET'])
+@jwt_required(optional=True) 
+def check_auth():
+    user_id = get_jwt_identity()
+    if user_id:
+        return jsonify({'logged_in': True, 'user_id': user_id}), 200
+    else:
+        return jsonify({'logged_in': False}), 200

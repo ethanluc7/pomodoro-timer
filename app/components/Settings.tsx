@@ -1,14 +1,24 @@
 import { ReactNode, useState } from "react";
-import GeneralSettings from './GeneralSettings';
+import GeneralSettings from "./GeneralSettings";
 import TimersSettings from "./TimerSettings";
 import SoundsSettings from "./SoundSettings";
-import AccountSettings from './AccountSettings';
+import AccountSettings from "./AccountSettings";
 
-export default function Settings({ children, onClose }: { children: ReactNode; onClose: () => void }) {
- 
-  const [activeSection, setActiveSection] = useState<string>('general');
+export default function Settings({
+  children,
+  onClose,
+  onUpdateTimers,
+}: {
+  children: ReactNode;
+  onClose: () => void;
+  onUpdateTimers: (values: {
+    pomodoro: number;
+    shortBreak: number;
+    longBreak: number;
+  }) => void;
+}) {
+  const [activeSection, setActiveSection] = useState<string>("general");
 
-  
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
   };
@@ -24,29 +34,28 @@ export default function Settings({ children, onClose }: { children: ReactNode; o
         </button>
 
         <div className="flex h-full">
-          
           <div className="w-64 bg-gray-800 text-white p-4">
             <div className="flex flex-col space-y-4">
               <button
-                onClick={() => handleSectionChange('general')}
+                onClick={() => handleSectionChange("general")}
                 className="hover:text-gray-400"
               >
                 General
               </button>
               <button
-                onClick={() => handleSectionChange('timers')}
+                onClick={() => handleSectionChange("timers")}
                 className="hover:text-gray-400"
               >
                 Timers
               </button>
               <button
-                onClick={() => handleSectionChange('sounds')}
+                onClick={() => handleSectionChange("sounds")}
                 className="hover:text-gray-400"
               >
                 Sounds
               </button>
               <button
-                onClick={() => handleSectionChange('account')}
+                onClick={() => handleSectionChange("account")}
                 className="hover:text-gray-400"
               >
                 Account
@@ -54,13 +63,13 @@ export default function Settings({ children, onClose }: { children: ReactNode; o
             </div>
           </div>
 
-     
           <div className="flex-grow p-8 overflow-y-auto">
-      
-            {activeSection === 'general' && <GeneralSettings />}
-            {activeSection === 'timers' && <TimersSettings />}
-            {activeSection === 'sounds' && <SoundsSettings />}
-            {activeSection === 'account' && <AccountSettings />}
+            {activeSection === "general" && <GeneralSettings />}
+            {activeSection === "timers" && (
+              <TimersSettings onUpdate={onUpdateTimers} />
+            )}
+            {activeSection === "sounds" && <SoundsSettings />}
+            {activeSection === "account" && <AccountSettings />}
           </div>
         </div>
       </div>
