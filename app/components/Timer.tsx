@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -10,11 +8,13 @@ type PomodoroTimerProps = {
     shortBreak: number;
     longBreak: number;
   };
+  selectedSound: string; 
 };
 
 const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
   selectedTopic,
   timers,
+  selectedSound,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(timers.pomodoro * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -49,6 +49,8 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
   };
 
   const handlePause = async () => {
+    if (mode !== "Pomodoro") return;
+
     const token = localStorage.getItem("token");
     if (!token) {
       console.log("User is not logged in. Data will not be stored.");
@@ -56,26 +58,34 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
     }
 
     const data = {
-      project_name: selectedTopic, 
+      project_name: selectedTopic,
       elapsed_time: Math.floor(elapsedTime),
     };
 
-    console.log("Sending data to backend:", data);
-
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:5000/api/save-timer",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Timer data saved successfully:", response.data);
+      await axios.post("http://127.0.0.1:5000/api/save-timer", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Timer data saved successfully");
     } catch (error: any) {
+      console.error("Error saving timer data:", error);
     }
+  };
+
+  const playSound = () => {
+    const audioPath = `/sounds/${selectedSound}.mp3`; 
+    const audio = new Audio(audioPath);
+    audio.play().catch((error) => {
+      console.error("Error playing sound:", error);
+    });
+  };
+
+  const handleTimerFinish = () => {
+    setIsRunning(false);
+    playSound();
   };
 
   useEffect(() => {
@@ -83,8 +93,9 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
     if (isRunning) {
       interval = setInterval(() => {
         setTimeLeft((prevTime) => {
-          if (prevTime <= 0) {
+          if (prevTime <= 1) {
             clearInterval(interval!);
+            handleTimerFinish();
             return 0;
           }
           setElapsedTime((prevElapsed) => prevElapsed + 1);

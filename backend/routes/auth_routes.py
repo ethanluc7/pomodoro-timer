@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_cors import cross_origin
-from models import db, Users, TimerData, TimerSettings, Topics
+from models import db, Users, TimerData, TimerSettings, Topics, SoundSettings
 from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
@@ -202,3 +202,80 @@ def get_timer_settings():
 
     except Exception as e:
         return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
+
+@auth_bp.route('/delete-topic/<int:topic_id>', methods=['DELETE'])
+@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@jwt_required()
+def delete_topic(topic_id):
+    user_id = get_jwt_identity()
+
+    topic = Topics.query.filter_by(id=topic_id, user_id=user_id).first()
+    if not topic:
+        return jsonify({"error": "Topic not found or unauthorized"}), 404
+
+    try:
+        db.session.delete(topic)
+        db.session.commit()
+        return jsonify({"message": "Topic deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+@auth_bp.route('/save-sound-settings', methods=['POST', 'OPTIONS'])
+@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@jwt_required()
+def save_sound_settings():
+    """
+    Save the user's selected sound setting.
+    """
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    valid_sounds = ["chime", "success"]
+
+    if 'selected_sound' not in data:
+        return jsonify({"error": "selected_sound is required"}), 400
+
+    selected_sound = data['selected_sound']
+
+    if selected_sound not in valid_sounds:
+        return jsonify({"error": f"Invalid sound. Choose from {valid_sounds}"}), 400
+
+    user = Users.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    sound_setting = user.sound_setting
+    if sound_setting:
+        sound_setting.selected_sound = selected_sound
+    else:
+        sound_setting = SoundSettings(
+            user_id=user.id,
+            selected_sound=selected_sound
+        )
+        db.session.add(sound_setting)
+
+    db.session.commit()
+
+    return jsonify({"message": "Sound setting updated successfully", "selected_sound": selected_sound}), 200
+
+@auth_bp.route('/get-sound-settings', methods=['GET', 'OPTIONS'])
+@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@jwt_required()
+def get_sound_settings():
+    """
+    Retrieve the sound setting for the logged-in user.
+    """
+    user_id = get_jwt_identity()
+
+    user = Users.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    sound_setting = user.sound_setting
+    selected_sound = sound_setting.selected_sound if sound_setting else "chime"  
+
+    return jsonify({"selected_sound": selected_sound}), 200

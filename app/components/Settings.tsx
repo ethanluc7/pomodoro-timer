@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import GeneralSettings from "./GeneralSettings";
 import TimersSettings from "./TimerSettings";
 import SoundsSettings from "./SoundSettings";
@@ -8,6 +8,11 @@ export default function Settings({
   children,
   onClose,
   onUpdateTimers,
+  onLoginSuccess,
+  isLoggedIn,
+  onLogout,
+  onSoundUpdate,
+  selectedSound,
 }: {
   children: ReactNode;
   onClose: () => void;
@@ -16,6 +21,11 @@ export default function Settings({
     shortBreak: number;
     longBreak: number;
   }) => void;
+  onLoginSuccess: () => void;
+  isLoggedIn: boolean;
+  onLogout: () => void;
+  onSoundUpdate: (sound: string) => void;
+  selectedSound: string;
 }) {
   const [activeSection, setActiveSection] = useState<string>("general");
 
@@ -68,8 +78,19 @@ export default function Settings({
             {activeSection === "timers" && (
               <TimersSettings onUpdate={onUpdateTimers} />
             )}
-            {activeSection === "sounds" && <SoundsSettings />}
-            {activeSection === "account" && <AccountSettings />}
+            {activeSection === "sounds" && (
+              <SoundsSettings
+                onSoundUpdate={onSoundUpdate}
+                selectedSound={selectedSound}
+              />
+            )}
+            {activeSection === "account" && (
+              <AccountSettings
+                onLoginSuccess={onLoginSuccess}
+                isLoggedIn={isLoggedIn}
+                onLogout={onLogout}
+              />
+            )}
           </div>
         </div>
       </div>

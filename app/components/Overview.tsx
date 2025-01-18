@@ -94,7 +94,7 @@ export default function Overview({
       }
 
       days[date][project] =
-        (days[date][project] || 0) + entry.elapsed_time / 3600; // Convert seconds to hours
+        (days[date][project] || 0) + entry.elapsed_time / 3600; 
     });
 
     const today = new Date();
