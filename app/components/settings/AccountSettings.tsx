@@ -13,7 +13,7 @@ export default function AccountSettings({
   isLoggedIn: boolean;
   onLogout: () => void;
 }) {
-  const router = useRouter(); // Use the Next.js router for navigation
+  const router = useRouter(); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");

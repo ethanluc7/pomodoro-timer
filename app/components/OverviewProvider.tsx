@@ -10,7 +10,6 @@ export default function OverviewProvider({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
 
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
 
