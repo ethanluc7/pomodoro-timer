@@ -103,7 +103,7 @@ export default function AccountSettings({
           </form>
 
           <button
-            onClick={() => router.push("/register")} // Navigate to the /register page
+            onClick={() => router.push("/register")} 
             className="w-full px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-600"
           >
             Don't have an account? Register
