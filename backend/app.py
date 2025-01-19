@@ -9,33 +9,37 @@ from models import db, Users
 
 load_dotenv()
 
+
 def create_app():
     app = Flask(__name__)
 
-   
-    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+    CORS(
+        app,
+        resources={r"/*": {"origins": "http://localhost:3000"}},
+        supports_credentials=True,
+    )
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
-    app.config['JWT_IDENTITY_CLAIM'] = 'sub'
-
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+    app.config["JWT_IDENTITY_CLAIM"] = "sub"
 
     db.init_app(app)
 
     migrate = Migrate(app, db)
     jwt = JWTManager(app)
 
-    
     from routes.auth_routes import auth_bp
-    app.register_blueprint(auth_bp, url_prefix='/api')
 
-    @app.route('/')
+    app.register_blueprint(auth_bp, url_prefix="/api")
+
+    @app.route("/")
     def home():
         return "Welcome to the Flask Application"
 
     return app
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
