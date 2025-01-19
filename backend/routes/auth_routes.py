@@ -228,9 +228,6 @@ def delete_topic(topic_id):
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def save_sound_settings():
-    """
-    Save the user's selected sound setting.
-    """
     user_id = get_jwt_identity()
     data = request.get_json()
 
@@ -266,9 +263,7 @@ def save_sound_settings():
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def get_sound_settings():
-    """
-    Retrieve the sound setting for the logged-in user.
-    """
+
     user_id = get_jwt_identity()
 
     user = Users.query.get(user_id)
