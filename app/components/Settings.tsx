@@ -1,8 +1,7 @@
 import React, { ReactNode, useState } from "react";
-import GeneralSettings from "./GeneralSettings";
-import TimersSettings from "./TimerSettings";
-import SoundsSettings from "./SoundSettings";
-import AccountSettings from "./AccountSettings";
+import TimersSettings from "./settings/TimerSettings";
+import SoundsSettings from "./settings/SoundSettings";
+import AccountSettings from "./settings/AccountSettings";
 
 export default function Settings({
   children,
@@ -27,7 +26,7 @@ export default function Settings({
   onSoundUpdate: (sound: string) => void;
   selectedSound: string;
 }) {
-  const [activeSection, setActiveSection] = useState<string>("general");
+  const [activeSection, setActiveSection] = useState<string>("timers");
 
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
@@ -46,12 +45,7 @@ export default function Settings({
         <div className="flex h-full">
           <div className="w-64 bg-gray-800 text-white p-4">
             <div className="flex flex-col space-y-4">
-              <button
-                onClick={() => handleSectionChange("general")}
-                className="hover:text-gray-400"
-              >
-                General
-              </button>
+          
               <button
                 onClick={() => handleSectionChange("timers")}
                 className="hover:text-gray-400"
@@ -74,7 +68,7 @@ export default function Settings({
           </div>
 
           <div className="flex-grow p-8 overflow-y-auto">
-            {activeSection === "general" && <GeneralSettings />}
+
             {activeSection === "timers" && (
               <TimersSettings onUpdate={onUpdateTimers} />
             )}

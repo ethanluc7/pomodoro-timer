@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function AccountSettings({
@@ -12,6 +13,7 @@ export default function AccountSettings({
   isLoggedIn: boolean;
   onLogout: () => void;
 }) {
+  const router = useRouter(); // Use the Next.js router for navigation
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -37,11 +39,11 @@ export default function AccountSettings({
 
       setMessage("Login successful!");
       setTimeout(() => {
-        onLoginSuccess(); 
-        setMessage(""); 
+        onLoginSuccess();
+        setMessage("");
       }, 1500);
     } catch (error: any) {
-      setError(error.response?.data?.message || "Login failed");
+      setError(error.response?.data?.error || "Login failed");
     }
   };
 
@@ -60,7 +62,7 @@ export default function AccountSettings({
       ) : (
         <>
           <h2 className="text-2xl font-bold mb-6">
-            Sync timer settings, themes, and more with an account!
+            Sync timer settings, sounds, and data with an account!
           </h2>
 
           <form>
@@ -76,7 +78,10 @@ export default function AccountSettings({
               className="w-full p-2 mb-4 border rounded-md text-black"
             />
 
-            <label htmlFor="password" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-2"
+            >
               Password
             </label>
             <input
@@ -96,6 +101,13 @@ export default function AccountSettings({
               Log in
             </button>
           </form>
+
+          <button
+            onClick={() => router.push("/register")} // Navigate to the /register page
+            className="w-full px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-600"
+          >
+            Don't have an account? Register
+          </button>
 
           {message && <p className="text-green-500 mt-2">{message}</p>}
           {error && <p className="text-red-500 mt-2">{error}</p>}

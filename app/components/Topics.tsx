@@ -127,36 +127,40 @@ const Topics: React.FC<TopicsProps> = ({
           Please <span className="text-purple-700 font-bold">sign in</span> to
           view and manage your topics.
         </p>
-      ) : topics.length === 0 ? (
-        <p className="text-center text-gray-800">No topics available.</p>
       ) : (
         <>
-          <ul className="space-y-3">
-            {topics.map((topic) => (
-              <li
-                key={topic.id}
-                className={`flex items-center justify-between p-3 border rounded-lg transition ${
-                  selectedTopic === topic.name
-                    ? "bg-purple-200 border-purple-500"
-                    : "hover:bg-purple-50"
-                }`}
-              >
-                <span
-                  onClick={() => handleTopicClick(topic.name)}
-                  className="text-gray-800 font-medium cursor-pointer flex-grow"
-                >
-                  {topic.name}
-                </span>
-                <button
-                  onClick={() => handleRemoveTopic(topic.id)}
-                  className="ml-4 px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
+          {topics.length === 0 && (
+            <p className="text-center text-gray-800">No topics available.</p>
+          )}
 
+          {topics.length > 0 && (
+            <ul className="space-y-3">
+              {topics.map((topic) => (
+                <li
+                  key={topic.id}
+                  className={`flex items-center justify-between p-3 border rounded-lg transition ${
+                    selectedTopic === topic.name
+                      ? "bg-purple-200 border-purple-500"
+                      : "hover:bg-purple-50"
+                  }`}
+                >
+                  <span
+                    onClick={() => handleTopicClick(topic.name)}
+                    className="text-gray-800 font-medium cursor-pointer flex-grow"
+                  >
+                    {topic.name}
+                  </span>
+                  <button
+                    onClick={() => handleRemoveTopic(topic.id)}
+                    className="ml-4 px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          
           <div className="mt-4">
             <input
               type="text"

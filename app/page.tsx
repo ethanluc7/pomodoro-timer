@@ -112,51 +112,53 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="bg-purple-600 min-h-screen text-white flex flex-col items-center">
-      <div className="w-full max-w-6xl px-8 py-4">
-        <NavBar
-          onSettingsOpen={() => setIsSettingsOpen(true)}
-          onOverviewOpen={() => setIsOverviewOpen(true)}
-        />
+    <div className="bg-purple-600 min-h-screen flex items-center justify-center">
+      <div className="text-white flex flex-col items-center">
+        <div className="w-full max-w-6xl px-8 py-4">
+          <NavBar
+            onSettingsOpen={() => setIsSettingsOpen(true)}
+            onOverviewOpen={() => setIsOverviewOpen(true)}
+          />
+        </div>
+
+        <div className="flex flex-col items-center mt-10">
+          <Timer
+            selectedTopic={selectedTopic}
+            timers={timerSettings}
+            selectedSound={selectedSound}
+          />
+          <p className="mt-4 text-lg font-medium">#{selectedTopic}</p>
+        </div>
+
+        <div className="w-full max-w-4xl mt-8 px-4">
+          <h2 className="text-xl font-bold mb-4 text-center">Tasks</h2>
+          <Topics
+            selectedTopic={selectedTopic}
+            setSelectedTopic={setSelectedTopic}
+            refreshTrigger={topicsRefreshTrigger}
+          />
+        </div>
+
+        {isOverviewOpen && (
+          <Overview onClose={() => setIsOverviewOpen(false)}>
+            <p>Overview content here...</p>
+          </Overview>
+        )}
+
+        {isSettingsOpen && (
+          <Settings
+            onClose={() => setIsSettingsOpen(false)}
+            onUpdateTimers={(values) => setTimerSettings(values)}
+            onLoginSuccess={handleLoginSuccess}
+            isLoggedIn={isLoggedIn}
+            onLogout={handleLogout}
+            onSoundUpdate={handleSoundUpdate}
+            selectedSound={selectedSound}
+          >
+            <p>Settings content here...</p>
+          </Settings>
+        )}
       </div>
-
-      <div className="flex flex-col items-center mt-10">
-        <Timer
-          selectedTopic={selectedTopic}
-          timers={timerSettings}
-          selectedSound={selectedSound}
-        />
-        <p className="mt-4 text-lg font-medium">#{selectedTopic}</p>
-      </div>
-
-      <div className="w-full max-w-4xl mt-8 px-4">
-        <h2 className="text-xl font-bold mb-4 text-center">Tasks</h2>
-        <Topics
-          selectedTopic={selectedTopic}
-          setSelectedTopic={setSelectedTopic}
-          refreshTrigger={topicsRefreshTrigger}
-        />
-      </div>
-
-      {isOverviewOpen && (
-        <Overview onClose={() => setIsOverviewOpen(false)}>
-          <p>Overview content here...</p>
-        </Overview>
-      )}
-
-      {isSettingsOpen && (
-        <Settings
-          onClose={() => setIsSettingsOpen(false)}
-          onUpdateTimers={(values) => setTimerSettings(values)}
-          onLoginSuccess={handleLoginSuccess}
-          isLoggedIn={isLoggedIn}
-          onLogout={handleLogout}
-          onSoundUpdate={handleSoundUpdate}
-          selectedSound={selectedSound}
-        >
-          <p>Settings content here...</p>
-        </Settings>
-      )}
     </div>
   );
 }
