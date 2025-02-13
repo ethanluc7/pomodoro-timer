@@ -2,6 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+from routes.auth_routes import auth_bp
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -28,8 +29,6 @@ def create_app():
 
     migrate = Migrate(app, db)
     jwt = JWTManager(app)
-
-    from routes.auth_routes import auth_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api")
 

@@ -5,99 +5,100 @@ from flask_cors import cross_origin
 from models import db, Users, TimerData, TimerSettings, Topics, SoundSettings
 from datetime import datetime
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint("auth", __name__)
 
-@auth_bp.route('/register', methods=['POST', 'OPTIONS'])
+
+@auth_bp.route("/register", methods=["POST", "OPTIONS"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 def register():
-    if request.method == 'OPTIONS':
-        return '', 200
+    if request.method == "OPTIONS":
+        return "", 200
 
     data = request.get_json()
-    first_name = data.get('firstName')
-    last_name = data.get('lastName')
-    email = data.get('email')
-    password = data.get('password')
+    first_name = data.get("firstName")
+    last_name = data.get("lastName")
+    email = data.get("email")
+    password = data.get("password")
 
     if not first_name or not last_name or not email or not password:
-        return jsonify({'error': 'Please fill out all fields'}), 400
+        return jsonify({"error": "Please fill out all fields"}), 400
 
     if Users.query.filter_by(email=email).first():
-        return jsonify({'error': 'Email already registered'}), 400
+        return jsonify({"error": "Email already registered"}), 400
 
     hashed_password = generate_password_hash(password)
     new_user = Users(
         first_name=first_name,
         last_name=last_name,
         email=email,
-        password_hash=hashed_password
+        password_hash=hashed_password,
     )
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({'message': 'User registered successfully'}), 201
+    return jsonify({"message": "User registered successfully"}), 201
 
-@auth_bp.route('/login', methods=['POST', 'OPTIONS'])
+
+@auth_bp.route("/login", methods=["POST", "OPTIONS"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 def login():
-    if request.method == 'OPTIONS':
-        return '', 200
+    if request.method == "OPTIONS":
+        return "", 200
 
     data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    email = data.get("email")
+    password = data.get("password")
 
     user = Users.query.filter_by(email=email).first()
     if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({'error': 'Invalid credentials'}), 401
+        return jsonify({"error": "Invalid credentials"}), 401
 
     access_token = create_access_token(identity=str(user.id))
-    return jsonify({'access_token': access_token}), 200
+    return jsonify({"access_token": access_token}), 200
 
-@auth_bp.route('/save-timer', methods=['POST'])
+
+@auth_bp.route("/save-timer", methods=["POST"])
 @jwt_required()
 def save_timer():
     try:
         user_id = get_jwt_identity()
         data = request.get_json()
-        project_name = data.get('project_name')
-        elapsed_time = data.get('elapsed_time')
+        project_name = data.get("project_name")
+        elapsed_time = data.get("elapsed_time")
 
         if not isinstance(project_name, str) or not project_name:
-            return jsonify({'msg': 'project_name must be a string'}), 422
+            return jsonify({"msg": "project_name must be a string"}), 422
         if not isinstance(elapsed_time, int) or elapsed_time < 0:
-            return jsonify({'msg': 'elapsed_time must be a non-negative integer'}), 422
+            return jsonify({"msg": "elapsed_time must be a non-negative integer"}), 422
 
         new_timer_data = TimerData(
             project_name=project_name,
             elapsed_time=elapsed_time,
             user_id=int(user_id),
-            timestamp=datetime.utcnow()
+            timestamp=datetime.utcnow(),
         )
         db.session.add(new_timer_data)
         db.session.commit()
 
-        return jsonify({'message': 'Timer data saved successfully'}), 200
+        return jsonify({"message": "Timer data saved successfully"}), 200
 
     except Exception as e:
-        return jsonify({'status': 'error', 'error': str(e)}), 500
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 
-@auth_bp.route('/get-timer-data', methods=['GET', 'OPTIONS'])
+@auth_bp.route("/get-timer-data", methods=["GET", "OPTIONS"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def get_timer_data():
     try:
         user_id = get_jwt_identity()
 
-       
         timer_data = TimerData.query.filter_by(user_id=user_id).all()
 
-       
         result = [
             {
                 "project_name": data.project_name,
                 "elapsed_time": data.elapsed_time,
-                "timestamp": data.timestamp.isoformat()
+                "timestamp": data.timestamp.isoformat(),
             }
             for data in timer_data
         ]
@@ -105,20 +106,20 @@ def get_timer_data():
         return jsonify({"timer_data": result}), 200
 
     except Exception as e:
-        return jsonify({'status': 'error', 'error': str(e)}), 500
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 
-@auth_bp.route('/check-auth', methods=['GET'])
-@jwt_required(optional=True) 
+@auth_bp.route("/check-auth", methods=["GET"])
+@jwt_required(optional=True)
 def check_auth():
     user_id = get_jwt_identity()
     if user_id:
-        return jsonify({'logged_in': True, 'user_id': user_id}), 200
+        return jsonify({"logged_in": True, "user_id": user_id}), 200
     else:
-        return jsonify({'logged_in': False}), 200
+        return jsonify({"logged_in": False}), 200
 
 
-@auth_bp.route('save-timer-settings', methods=['POST'])
+@auth_bp.route("save-timer-settings", methods=["POST"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def save_timer_settings():
@@ -147,7 +148,7 @@ def save_timer_settings():
     return jsonify({"message": "Timer settings saved successfully"})
 
 
-@auth_bp.route('/add-topic', methods=['POST'])
+@auth_bp.route("/add-topic", methods=["POST"])
 @jwt_required()
 def add_topic():
     user_id = get_jwt_identity()
@@ -160,7 +161,7 @@ def add_topic():
     return jsonify({"id": new_topic.id, "name": new_topic.name})
 
 
-@auth_bp.route('/get-topics', methods=['GET', 'OPTIONS'])
+@auth_bp.route("/get-topics", methods=["GET", "OPTIONS"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def get_topics():
@@ -173,10 +174,10 @@ def get_topics():
 
         return jsonify(result), 200
     except Exception as e:
-        return jsonify({'status': 'error', 'error': str(e)}), 500
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 
-@auth_bp.route('/get-timer-settings', methods=['GET', 'OPTIONS'])
+@auth_bp.route("/get-timer-settings", methods=["GET", "OPTIONS"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def get_timer_settings():
@@ -186,26 +187,34 @@ def get_timer_settings():
         timer_settings = TimerSettings.query.filter_by(user_id=user_id).first()
 
         if not timer_settings:
-            return jsonify({
-                "pomodoro": 25,
-                "short_break": 5,
-                "long_break": 10,
-                "message": "Default timer settings returned as no settings were found."
-            }), 200
+            return (
+                jsonify(
+                    {
+                        "pomodoro": 25,
+                        "short_break": 5,
+                        "long_break": 10,
+                        "message": "Default timer settings returned as no settings were found.",
+                    }
+                ),
+                200,
+            )
 
- 
-        return jsonify({
-            "pomodoro": timer_settings.pomodoro,
-            "short_break": timer_settings.short_break,
-            "long_break": timer_settings.long_break
-        }), 200
+        return (
+            jsonify(
+                {
+                    "pomodoro": timer_settings.pomodoro,
+                    "short_break": timer_settings.short_break,
+                    "long_break": timer_settings.long_break,
+                }
+            ),
+            200,
+        )
 
     except Exception as e:
-        return jsonify({'status': 'error', 'error': str(e)}), 500
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 
-
-@auth_bp.route('/delete-topic/<int:topic_id>', methods=['DELETE'])
+@auth_bp.route("/delete-topic/<int:topic_id>", methods=["DELETE"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def delete_topic(topic_id):
@@ -223,8 +232,7 @@ def delete_topic(topic_id):
         return jsonify({"error": str(e)}), 500
 
 
-
-@auth_bp.route('/save-sound-settings', methods=['POST', 'OPTIONS'])
+@auth_bp.route("/save-sound-settings", methods=["POST", "OPTIONS"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def save_sound_settings():
@@ -233,10 +241,10 @@ def save_sound_settings():
 
     valid_sounds = ["chime", "success"]
 
-    if 'selected_sound' not in data:
+    if "selected_sound" not in data:
         return jsonify({"error": "selected_sound is required"}), 400
 
-    selected_sound = data['selected_sound']
+    selected_sound = data["selected_sound"]
 
     if selected_sound not in valid_sounds:
         return jsonify({"error": f"Invalid sound. Choose from {valid_sounds}"}), 400
@@ -249,17 +257,23 @@ def save_sound_settings():
     if sound_setting:
         sound_setting.selected_sound = selected_sound
     else:
-        sound_setting = SoundSettings(
-            user_id=user.id,
-            selected_sound=selected_sound
-        )
+        sound_setting = SoundSettings(user_id=user.id, selected_sound=selected_sound)
         db.session.add(sound_setting)
 
     db.session.commit()
 
-    return jsonify({"message": "Sound setting updated successfully", "selected_sound": selected_sound}), 200
+    return (
+        jsonify(
+            {
+                "message": "Sound setting updated successfully",
+                "selected_sound": selected_sound,
+            }
+        ),
+        200,
+    )
 
-@auth_bp.route('/get-sound-settings', methods=['GET', 'OPTIONS'])
+
+@auth_bp.route("/get-sound-settings", methods=["GET", "OPTIONS"])
 @cross_origin(origins="http://localhost:3000", supports_credentials=True)
 @jwt_required()
 def get_sound_settings():
@@ -269,8 +283,8 @@ def get_sound_settings():
     user = Users.query.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
-    
+
     sound_setting = user.sound_setting
-    selected_sound = sound_setting.selected_sound if sound_setting else "chime"  
+    selected_sound = sound_setting.selected_sound if sound_setting else "chime"
 
     return jsonify({"selected_sound": selected_sound}), 200

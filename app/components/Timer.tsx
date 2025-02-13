@@ -121,15 +121,15 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
 
   return (
     <div className="flex justify-center items-center h-[60vh] bg-purple-600">
-      <div className="text-center bg-white p-6 rounded-lg shadow-lg w-72">
-        <div className="flex justify-center gap-4 mb-6">
+      <div className="text-center bg-white py-6 rounded-lg shadow-lg w-80">
+        <div className="flex justify-center gap-4 mb-6 px-2">
           {["Pomodoro", "Short Break", "Long Break"].map((modeName) => (
             <button
               key={modeName}
               onClick={() =>
                 setMode(modeName as "Pomodoro" | "Short Break" | "Long Break")
               }
-              className={`py-2 px-4 rounded-full text-white ${
+              className={`py-2 px-5 rounded-lg text-white ${
                 mode === modeName ? "bg-purple-600" : "bg-gray-300"
               }`}
             >

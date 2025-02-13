@@ -15,7 +15,7 @@ const NavBar = ({
       <div className="flex items-center space-x-2">
         <img src="/clock-5.svg" alt="Clock" />
 
-        <h1 className="text-white font-bold text-lg">Focus</h1>
+        <h1 className="text-white font-bold text-lg">focus</h1>
       </div>
 
       <div className="flex space-x-4">

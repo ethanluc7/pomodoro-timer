@@ -50,7 +50,6 @@ const TimersSettings: React.FC<{
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-     
     } catch {
       setErrorMessage("Error saving timer settings. Please try again.");
     }
@@ -62,7 +61,10 @@ const TimersSettings: React.FC<{
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
       <form>
         <div className="mb-4">
-          <label htmlFor="pomodoro" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="pomodoro"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Pomodoro
           </label>
           <input
@@ -76,7 +78,10 @@ const TimersSettings: React.FC<{
         </div>
 
         <div className="mb-4">
-          <label htmlFor="shortBreak" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="shortBreak"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Short Break
           </label>
           <input
@@ -90,7 +95,10 @@ const TimersSettings: React.FC<{
         </div>
 
         <div className="mb-4">
-          <label htmlFor="longBreak" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="longBreak"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Long Break
           </label>
           <input
