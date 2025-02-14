@@ -31,7 +31,7 @@ const Topics: React.FC<TopicsProps> = ({
     }
 
     try {
-      const response = await axios.get("http://127.0.0.1:5000/api/get-topics", {
+      const response = await axios.get(`${process.env.FRONTEND_ORIGIN}/api/get-topics`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setIsLoggedIn(true);
@@ -64,7 +64,7 @@ const Topics: React.FC<TopicsProps> = ({
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/api/add-topic",
+        `${process.env.FRONTEND_ORIGIN}/api/add-topic`,
         { name: newTopic },
         {
           headers: {
@@ -94,7 +94,7 @@ const Topics: React.FC<TopicsProps> = ({
     }
 
     try {
-      await axios.delete(`http://127.0.0.1:5000/api/delete-topic/${id}`, {
+      await axios.delete(`${process.env.FRONTEND_ORIGIN}/api/delete-topic/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

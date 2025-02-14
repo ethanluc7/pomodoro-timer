@@ -33,7 +33,7 @@ export default function Overview({
     }
 
     axios
-      .get("http://127.0.0.1:5000/api/check-auth", {
+      .get(`${process.env.FRONTEND_ORIGIN}/api/check-auth`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

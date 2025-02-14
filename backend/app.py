@@ -14,9 +14,11 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
 
+    FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
+
     CORS(
         app,
-        resources={r"/*": {"origins": "http://localhost:3000"}},
+        resources={r"/*": {"origins": FRONTEND_ORIGIN}},
         supports_credentials=True,
     )
 
@@ -41,4 +43,3 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True)

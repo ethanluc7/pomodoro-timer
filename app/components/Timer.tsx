@@ -63,7 +63,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
     };
 
     try {
-      await axios.post("http://127.0.0.1:5000/api/save-timer", data, {
+      await axios.post(`${process.env.FRONTEND_ORIGIN}/api/save-timer`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
