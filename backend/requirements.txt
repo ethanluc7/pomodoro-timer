@@ -1,0 +1,7 @@
+flask
+gunicorn
+flask-cors
+flask-migrate
+flask-jwt-extended
+psycopg2-binary  
+python-dotenv    
