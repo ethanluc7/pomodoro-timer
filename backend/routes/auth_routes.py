@@ -4,12 +4,15 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_cors import cross_origin
 from models import db, Users, TimerData, TimerSettings, Topics, SoundSettings
 from datetime import datetime
+import os
 
 auth_bp = Blueprint("auth", __name__)
 
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
+
 
 @auth_bp.route("/register", methods=["POST", "OPTIONS"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 def register():
     if request.method == "OPTIONS":
         return "", 200
@@ -39,7 +42,7 @@ def register():
 
 
 @auth_bp.route("/login", methods=["POST", "OPTIONS"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 def login():
     if request.method == "OPTIONS":
         return "", 200
@@ -86,7 +89,7 @@ def save_timer():
 
 
 @auth_bp.route("/get-timer-data", methods=["GET", "OPTIONS"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 @jwt_required()
 def get_timer_data():
     try:
@@ -120,7 +123,7 @@ def check_auth():
 
 
 @auth_bp.route("save-timer-settings", methods=["POST"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 @jwt_required()
 def save_timer_settings():
     user_id = get_jwt_identity()
@@ -162,7 +165,7 @@ def add_topic():
 
 
 @auth_bp.route("/get-topics", methods=["GET", "OPTIONS"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 @jwt_required()
 def get_topics():
     try:
@@ -178,7 +181,7 @@ def get_topics():
 
 
 @auth_bp.route("/get-timer-settings", methods=["GET", "OPTIONS"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 @jwt_required()
 def get_timer_settings():
     try:
@@ -215,7 +218,7 @@ def get_timer_settings():
 
 
 @auth_bp.route("/delete-topic/<int:topic_id>", methods=["DELETE"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 @jwt_required()
 def delete_topic(topic_id):
     user_id = get_jwt_identity()
@@ -233,7 +236,7 @@ def delete_topic(topic_id):
 
 
 @auth_bp.route("/save-sound-settings", methods=["POST", "OPTIONS"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 @jwt_required()
 def save_sound_settings():
     user_id = get_jwt_identity()
@@ -274,7 +277,7 @@ def save_sound_settings():
 
 
 @auth_bp.route("/get-sound-settings", methods=["GET", "OPTIONS"])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins=FRONTEND_ORIGIN, supports_credentials=True)
 @jwt_required()
 def get_sound_settings():
 
