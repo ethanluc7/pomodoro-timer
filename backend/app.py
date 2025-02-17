@@ -10,7 +10,6 @@ from backend.models import db, Users
 
 load_dotenv()
 
-
 def create_app():
     app = Flask(__name__)
 
@@ -39,7 +38,5 @@ def create_app():
         return "Welcome to the Flask Application"
 
     return app
-
-
 
 app = create_app()
