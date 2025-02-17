@@ -6,6 +6,6 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/wsgi.py" },
-    { "src": "/(.*)", "dest": "app/page.tsx" }
+    { "src": "/(.*)", "dest": "app" }
   ]
 }
