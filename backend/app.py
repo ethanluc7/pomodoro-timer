@@ -2,11 +2,11 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
-from routes.auth_routes import auth_bp
+from backend.routes.auth_routes import auth_bp
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
-from models import db, Users
+from backend.models import db, Users
 
 load_dotenv()
 
