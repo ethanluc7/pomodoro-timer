@@ -1,11 +1,12 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "backend/wsgi.py", "use": "@vercel/python" },
-    { "src": "app/package.json", "use": "@vercel/next" }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "backend/wsgi.py" },
-    { "src": "/(.*)", "dest": "app" }
-  ]
-}
+    "version": 2,
+    "builds": [
+      { "src": "backend/wsgi.py", "use": "@vercel/python" },
+      { "src": "app/package.json", "use": "@vercel/next" }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "backend/wsgi.py" },
+      { "src": "/(.*)", "dest": "app/" }
+    ]
+  }
+  
